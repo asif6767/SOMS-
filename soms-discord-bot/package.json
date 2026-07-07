@@ -1,0 +1,16 @@
+{
+  "name": "soms-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot for the Smart Office Management System — reads the same backend the web dashboard reads, so both interfaces always reflect the same reality.",
+  "type": "module",
+  "main": "src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "node --watch src/bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5",
+    "ws": "^8.17.1"
+  }
+}

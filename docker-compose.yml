@@ -1,0 +1,70 @@
+# Required in a root .env file next to this compose file (see .env.example):
+#   AUTH_TOKEN, SOMS_DB_KEY, SOMS_HMAC_SECRET, CORS_ORIGIN
+# There are deliberately NO fallback defaults for secrets below — compose
+# will fail fast with a clear error if they're missing, rather than quietly
+# starting every service with the same well-known placeholder token.
+
+services:
+  backend:
+    build: ./soms-backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      NODE_ENV: ${NODE_ENV:-production}
+      AUTH_TOKEN: ${AUTH_TOKEN:?set AUTH_TOKEN in your .env — run: node scripts/generate-secrets.js}
+      SOMS_DB_KEY: ${SOMS_DB_KEY:?set SOMS_DB_KEY in your .env — run: node scripts/generate-secrets.js}
+      SOMS_HMAC_SECRET: ${SOMS_HMAC_SECRET:?set SOMS_HMAC_SECRET in your .env — run: node scripts/generate-secrets.js}
+      CORS_ORIGIN: ${CORS_ORIGIN:?set CORS_ORIGIN to your dashboard's real origin(s), comma-separated}
+      TICK_INTERVAL_MS: ${TICK_INTERVAL_MS:-6000}
+      DEFAULT_KWH_RATE: ${DEFAULT_KWH_RATE:-0.14}
+      DATA_DIR: /app/data
+    volumes:
+      - soms-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  frontend:
+    build: ./soms-frontend-wired
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  discord-bot:
+    build: ./soms-discord-bot
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      DISCORD_TOKEN: ${DISCORD_TOKEN:-}
+      ALERTS_CHANNEL_ID: ${ALERTS_CHANNEL_ID:-}
+      ADMIN_ROLE_ID: ${ADMIN_ROLE_ID:-}
+      DISCORD_OWNER_IDS: ${DISCORD_OWNER_IDS:-}
+      SOMS_API_BASE: http://backend:4000/api/v1
+      SOMS_WS_URL: ws://backend:4000/ws/live
+      SOMS_AUTH_TOKEN: ${AUTH_TOKEN:?set AUTH_TOKEN in your .env}
+      SOMS_HMAC_SECRET: ${SOMS_HMAC_SECRET:?set SOMS_HMAC_SECRET in your .env}
+    restart: unless-stopped
+
+  telegram-bot:
+    build: ./soms-telegram-bot
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      ADMIN_CHAT_IDS: ${ADMIN_CHAT_IDS:-}
+      ALERTS_CHAT_ID: ${ALERTS_CHAT_ID:-}
+      SOMS_API_BASE: http://backend:4000/api/v1
+      SOMS_WS_URL: ws://backend:4000/ws/live
+      SOMS_AUTH_TOKEN: ${AUTH_TOKEN:?set AUTH_TOKEN in your .env}
+      SOMS_HMAC_SECRET: ${SOMS_HMAC_SECRET:?set SOMS_HMAC_SECRET in your .env}
+    restart: unless-stopped
+
+volumes:
+  soms-data: {}

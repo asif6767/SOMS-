@@ -1,0 +1,94 @@
+<svg viewBox="0 0 1180 760" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1180" height="760" fill="#f8fafc"/>
+  <text x="590" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">SOMS — High-Level System Diagram</text>
+  <text x="590" y="56" text-anchor="middle" font-size="13" fill="#64748b">Device state → Backend (single source of truth) → Web Dashboard + Discord Bot → User</text>
+
+  <!-- Layer 1: Devices -->
+  <rect x="40" y="90" width="1100" height="130" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="112" font-size="13" font-weight="700" fill="#0f172a">1. Device Layer — 3 rooms × (2 fans + 3 lights) = 15 devices</text>
+
+  <g font-size="11" fill="#0f172a">
+    <rect x="60" y="128" width="330" height="70" rx="8" fill="#ecfeff" stroke="#67e8f9"/>
+    <text x="225" y="145" text-anchor="middle" font-weight="600">Drawing Room</text>
+    <text x="225" y="163" text-anchor="middle">2 Fans · 3 Lights</text>
+    <text x="225" y="181" text-anchor="middle" fill="#64748b">(simulated on/off, wattage)</text>
+
+    <rect x="410" y="128" width="330" height="70" rx="8" fill="#ecfeff" stroke="#67e8f9"/>
+    <text x="575" y="145" text-anchor="middle" font-weight="600">Work Room 1</text>
+    <text x="575" y="163" text-anchor="middle">2 Fans · 3 Lights</text>
+    <text x="575" y="181" text-anchor="middle" fill="#64748b">(simulated, or live ESP32)</text>
+
+    <rect x="760" y="128" width="330" height="70" rx="8" fill="#ecfeff" stroke="#67e8f9"/>
+    <text x="925" y="145" text-anchor="middle" font-weight="600">Work Room 2</text>
+    <text x="925" y="163" text-anchor="middle">2 Fans · 3 Lights</text>
+    <text x="925" y="181" text-anchor="middle" fill="#64748b">(simulated on/off, wattage)</text>
+  </g>
+
+  <!-- optional hardware bridge -->
+  <rect x="900" y="238" width="190" height="46" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="995" y="260" text-anchor="middle" font-size="11" font-weight="600" fill="#7c4a03">Optional: ESP32 node</text>
+  <text x="995" y="274" text-anchor="middle" font-size="10" fill="#7c4a03">(one room, real relay + sensors)</text>
+  <line x1="925" y1="198" x2="985" y2="238" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- arrows layer1 -> layer2 -->
+  <line x1="225" y1="220" x2="500" y2="300" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="575" y1="220" x2="575" y2="300" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="925" y1="220" x2="650" y2="300" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="595" y="255" font-size="10" fill="#64748b">device state (status, wattage, room, lastChanged)</text>
+
+  <!-- Layer 2: Backend -->
+  <rect x="290" y="300" width="600" height="130" rx="10" fill="#eef2ff" stroke="#6366f1"/>
+  <text x="590" y="322" text-anchor="middle" font-size="14" font-weight="700" fill="#312e81">2. Backend — soms-backend (single source of truth)</text>
+  <text x="590" y="342" text-anchor="middle" font-size="11" fill="#312e81">In-memory state + simulator tick loop + rule engine (after-hours, &gt;2h continuous run)</text>
+  <g font-size="10.5" fill="#312e81">
+    <rect x="320" y="356" width="255" height="56" rx="6" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="447" y="376" text-anchor="middle" font-weight="600">REST API</text>
+    <text x="447" y="392" text-anchor="middle">GET /snapshot /rooms/:id /power /alerts</text>
+    <text x="447" y="406" text-anchor="middle">PATCH /devices/:id</text>
+
+    <rect x="605" y="356" width="255" height="56" rx="6" fill="#ffffff" stroke="#a5b4fc"/>
+    <text x="732" y="376" text-anchor="middle" font-weight="600">WebSocket /ws/live</text>
+    <text x="732" y="392" text-anchor="middle">state:diff · alert:new · alert:resolved</text>
+    <text x="732" y="406" text-anchor="middle">pushed on every simulator tick</text>
+  </g>
+
+  <!-- arrows layer2 -> layer3 -->
+  <line x1="450" y1="430" x2="270" y2="500" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="430" x2="900" y2="500" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="150" y="470" font-size="10" fill="#64748b">WS state:diff (live)</text>
+  <text x="900" y="470" font-size="10" fill="#64748b">REST poll + WS alert:new</text>
+
+  <!-- device control arrow going back up -->
+  <line x1="270" y1="500" x2="450" y2="430" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-blue)"/>
+  <text x="130" y="510" font-size="10" fill="#2563eb">PATCH toggle (dashboard control)</text>
+
+  <!-- Layer 3: interfaces -->
+  <rect x="80" y="500" width="380" height="120" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="270" y="524" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">3a. Web Dashboard</text>
+  <text x="270" y="546" text-anchor="middle" font-size="11" fill="#334155">Live device panel · power meter</text>
+  <text x="270" y="564" text-anchor="middle" font-size="11" fill="#334155">Active alerts panel · glowing lights /</text>
+  <text x="270" y="582" text-anchor="middle" font-size="11" fill="#334155">animated fans on office-layout view</text>
+  <text x="270" y="602" text-anchor="middle" font-size="10" fill="#64748b">no page refresh — WS-driven</text>
+
+  <rect x="720" y="500" width="380" height="120" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="910" y="524" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">3b. Discord Bot</text>
+  <text x="910" y="546" text-anchor="middle" font-size="11" fill="#334155">!status · !room &lt;name&gt; · !usage</text>
+  <text x="910" y="564" text-anchor="middle" font-size="11" fill="#334155">friendly, data-driven replies</text>
+  <text x="910" y="582" text-anchor="middle" font-size="11" fill="#334155">bonus: proactive alert push to a</text>
+  <text x="910" y="600" text-anchor="middle" font-size="10" fill="#64748b">designated channel via WS alert:new</text>
+
+  <!-- Layer 4: user -->
+  <rect x="440" y="670" width="300" height="60" rx="10" fill="#0f172a"/>
+  <text x="590" y="705" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">4. User (the boss, on browser or Discord)</text>
+
+  <line x1="270" y1="620" x2="500" y2="670" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="910" y1="620" x2="680" y2="670" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>

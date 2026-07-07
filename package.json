@@ -1,0 +1,27 @@
+{
+  "name": "soms",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Smart Office Management System — root dev orchestrator (backend + dashboard + Discord bot)",
+  "workspaces": [
+    "soms-backend",
+    "soms-discord-bot",
+    "soms-telegram-bot"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:all": "concurrently -n backend,frontend,discord,telegram -c blue,green,magenta,yellow \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:bot\" \"npm run dev:telegram\"",
+    "dev:backend": "npm run start --workspace=soms-backend",
+    "dev:frontend": "serve soms-frontend-wired/dist -l 8080",
+    "dev:bot": "npm run start --workspace=soms-discord-bot",
+    "dev:telegram": "npm run start --workspace=soms-telegram-bot",
+    "setup": "npm install && npm run setup:env",
+    "setup:env": "node scripts/setup-env.js",
+    "gen:secrets": "node scripts/generate-secrets.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "serve": "^14.2.3"
+  }
+}

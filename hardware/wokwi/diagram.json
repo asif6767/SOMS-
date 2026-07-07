@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "author": "SOMS project",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": 0, "left": 100, "attrs": {} },
+
+    { "type": "wokwi-dht22", "id": "dht22", "top": -220, "left": -260, "attrs": {} },
+    { "type": "wokwi-resistor", "id": "r_dht_pullup", "top": -220, "left": -180, "attrs": { "value": "10000" } },
+
+    { "type": "wokwi-potentiometer", "id": "mq135_sim", "top": -160, "left": -260, "attrs": { "label": "MQ-135 stand-in (air quality)" } },
+    { "type": "wokwi-potentiometer", "id": "flame_sim", "top": -100, "left": -260, "attrs": { "label": "IR flame stand-in" } },
+
+    { "type": "wokwi-pushbutton", "id": "pir_sim", "top": -40, "left": -260, "attrs": { "color": "blue", "label": "PIR motion (press = occupied)" } },
+    { "type": "wokwi-resistor", "id": "r_pir_pulldown", "top": -40, "left": -190, "attrs": { "value": "10000" } },
+
+    { "type": "wokwi-potentiometer", "id": "acs712_fan_sim", "top": 20, "left": -260, "attrs": { "label": "ACS712 #1 stand-in (fan bank amps)" } },
+    { "type": "wokwi-potentiometer", "id": "acs712_light_sim", "top": 80, "left": -260, "attrs": { "label": "ACS712 #2 stand-in (light bank amps)" } },
+
+    { "type": "wokwi-led", "id": "fan1_led", "top": -180, "left": 420, "attrs": { "color": "cyan", "label": "Fan 1" } },
+    { "type": "wokwi-resistor", "id": "r_fan1", "top": -180, "left": 370, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "fan2_led", "top": -140, "left": 420, "attrs": { "color": "cyan", "label": "Fan 2" } },
+    { "type": "wokwi-resistor", "id": "r_fan2", "top": -140, "left": 370, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "light1_led", "top": -100, "left": 420, "attrs": { "color": "yellow", "label": "Light 1" } },
+    { "type": "wokwi-resistor", "id": "r_light1", "top": -100, "left": 370, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "light2_led", "top": -60, "left": 420, "attrs": { "color": "yellow", "label": "Light 2" } },
+    { "type": "wokwi-resistor", "id": "r_light2", "top": -60, "left": 370, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "light3_led", "top": -20, "left": 420, "attrs": { "color": "yellow", "label": "Light 3" } },
+    { "type": "wokwi-resistor", "id": "r_light3", "top": -20, "left": 370, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-led", "id": "status_led", "top": 60, "left": 420, "attrs": { "color": "green", "label": "Link status" } },
+    { "type": "wokwi-resistor", "id": "r_status", "top": 60, "left": 370, "attrs": { "value": "220" } },
+
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 120, "left": 420, "attrs": {} }
+  ],
+  "connections": [
+    ["dht22:VCC", "esp:3V3", "red", ["v0"]],
+    ["dht22:GND", "esp:GND.1", "black", ["v0"]],
+    ["dht22:SDA", "esp:4", "green", ["v0"]],
+    ["dht22:SDA", "r_dht_pullup:1", "green", ["v0"]],
+    ["r_dht_pullup:2", "esp:3V3", "red", ["v0"]],
+
+    ["mq135_sim:VCC", "esp:3V3", "red", ["v0"]],
+    ["mq135_sim:GND", "esp:GND.1", "black", ["v0"]],
+    ["mq135_sim:SIG", "esp:34", "orange", ["v0"]],
+
+    ["flame_sim:VCC", "esp:3V3", "red", ["v0"]],
+    ["flame_sim:GND", "esp:GND.1", "black", ["v0"]],
+    ["flame_sim:SIG", "esp:35", "orange", ["v0"]],
+
+    ["pir_sim:1.l", "esp:3V3", "red", ["v0"]],
+    ["pir_sim:2.l", "esp:27", "blue", ["v0"]],
+    ["pir_sim:2.l", "r_pir_pulldown:1", "blue", ["v0"]],
+    ["r_pir_pulldown:2", "esp:GND.1", "black", ["v0"]],
+
+    ["acs712_fan_sim:VCC", "esp:3V3", "red", ["v0"]],
+    ["acs712_fan_sim:GND", "esp:GND.2", "black", ["v0"]],
+    ["acs712_fan_sim:SIG", "esp:32", "orange", ["v0"]],
+
+    ["acs712_light_sim:VCC", "esp:3V3", "red", ["v0"]],
+    ["acs712_light_sim:GND", "esp:GND.2", "black", ["v0"]],
+    ["acs712_light_sim:SIG", "esp:33", "orange", ["v0"]],
+
+    ["esp:25", "r_fan1:1", "green", ["v0"]],
+    ["r_fan1:2", "fan1_led:A", "green", ["v0"]],
+    ["fan1_led:C", "esp:GND.1", "black", ["v0"]],
+
+    ["esp:25", "r_fan2:1", "green", ["v0"]],
+    ["r_fan2:2", "fan2_led:A", "green", ["v0"]],
+    ["fan2_led:C", "esp:GND.1", "black", ["v0"]],
+
+    ["esp:26", "r_light1:1", "yellow", ["v0"]],
+    ["r_light1:2", "light1_led:A", "yellow", ["v0"]],
+    ["light1_led:C", "esp:GND.1", "black", ["v0"]],
+
+    ["esp:26", "r_light2:1", "yellow", ["v0"]],
+    ["r_light2:2", "light2_led:A", "yellow", ["v0"]],
+    ["light2_led:C", "esp:GND.1", "black", ["v0"]],
+
+    ["esp:26", "r_light3:1", "yellow", ["v0"]],
+    ["r_light3:2", "light3_led:A", "yellow", ["v0"]],
+    ["light3_led:C", "esp:GND.1", "black", ["v0"]],
+
+    ["esp:2", "r_status:1", "green", ["v0"]],
+    ["r_status:2", "status_led:A", "green", ["v0"]],
+    ["status_led:C", "esp:GND.1", "black", ["v0"]],
+
+    ["esp:13", "buzzer:1", "purple", ["v0"]],
+    ["buzzer:2", "esp:GND.1", "black", ["v0"]]
+  ]
+}

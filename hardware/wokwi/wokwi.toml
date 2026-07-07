@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = "build/soms_room_node.ino.bin"
+elf = "build/soms_room_node.ino.elf"

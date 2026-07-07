@@ -1,0 +1,16 @@
+{
+  "name": "soms-telegram-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for the Smart Office Management System — mirrors the Discord bot's command set against the same soms-backend REST API.",
+  "type": "module",
+  "main": "src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "node --watch src/bot.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0",
+    "dotenv": "^16.4.5",
+    "ws": "^8.17.1"
+  }
+}

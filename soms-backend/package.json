@@ -1,0 +1,22 @@
+{
+  "name": "soms-backend",
+  "version": "1.0.0",
+  "description": "Smart Office Management System - backend API + WebSocket + simulator",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "gen:secrets": "node ../scripts/generate-secrets.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "pdfkit": "^0.15.0",
+    "ws": "^8.17.1"
+  }
+}
